@@ -1,0 +1,19 @@
+{
+  "name": "jacks-redux-class-actions",
+  "version": "0.0.0",
+  "main": "index.js",
+  "author": "Jack Coy <jackman3000@gmail.com>",
+  "license": "MIT",
+  "scripts": {
+    "test": "jest",
+    "build": "tsc src/*.ts"
+  },
+  "dependencies": {
+    "redux": "^4.0.1"
+  },
+  "devDependencies": {
+    "@types/jest": "^23.3.10",
+    "jest": "^23.6.0",
+    "typescript": "^3.2.2"
+  }
+}
