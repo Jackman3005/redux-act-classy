@@ -27,10 +27,3 @@ export function EasyAction<OUT = void>(type: string): EasyActionStatic<OUT, Easy
 
     return _Action as EasyActionStatic<OUT, EasyAction<OUT>>
 }
-
-// Could add a reducer that stores all OnStart, etc states for each Action. state.asyncActions[MyAction.TYPE].status
-// multiple async actions of the same type (potentially with different data) may be going at the same time
-
-// test that functions are not passed when deconstructing {...action}
-
-// Bug: Fix doAsync return types that are arrays. only able to determine they are any[] atm
