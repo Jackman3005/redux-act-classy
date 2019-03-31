@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<coverage generated="1553998362523" clover="3.2.0">
+  <project timestamp="1553998362523" name="All files">
+    <metrics statements="48" coveredstatements="48" conditionals="12" coveredconditionals="12" methods="17" coveredmethods="17" elements="77" coveredelements="77" complexity="0" loc="48" ncloc="48" packages="1" files="4" classes="4">
+      <file name="EasyAction.ts" path="/Users/jcoy/workspace/redux-easy-actions-lib/src/EasyAction.ts">
+        <metrics statements="10" coveredstatements="10" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
+        <line num="17" count="4" type="stmt"/>
+        <line num="18" count="6" type="stmt"/>
+        <line num="19" count="6" type="stmt"/>
+        <line num="20" count="6" type="stmt"/>
+        <line num="21" count="6" type="stmt"/>
+        <line num="22" count="6" type="stmt"/>
+        <line num="24" count="6" type="stmt"/>
+        <line num="25" count="14" type="stmt"/>
+        <line num="26" count="6" type="stmt"/>
+        <line num="28" count="6" type="stmt"/>
+      </file>
+      <file name="Helpers.ts" path="/Users/jcoy/workspace/redux-easy-actions-lib/src/Helpers.ts">
+        <metrics statements="10" coveredstatements="10" conditionals="0" coveredconditionals="0" methods="5" coveredmethods="5"/>
+        <line num="36" count="2" type="stmt"/>
+        <line num="41" count="2" type="stmt"/>
+        <line num="44" count="2" type="stmt"/>
+        <line num="49" count="3" type="stmt"/>
+        <line num="52" count="2" type="stmt"/>
+        <line num="57" count="3" type="stmt"/>
+        <line num="60" count="2" type="stmt"/>
+        <line num="65" count="3" type="stmt"/>
+        <line num="68" count="2" type="stmt"/>
+        <line num="73" count="3" type="stmt"/>
+      </file>
+      <file name="Middleware.ts" path="/Users/jcoy/workspace/redux-easy-actions-lib/src/Middleware.ts">
+        <metrics statements="24" coveredstatements="24" conditionals="12" coveredconditionals="12" methods="10" coveredmethods="10"/>
+        <line num="2" count="2" type="stmt"/>
+        <line num="8" count="2" type="stmt"/>
+        <line num="12" count="2" type="stmt"/>
+        <line num="13" count="13" type="stmt"/>
+        <line num="15" count="13" type="stmt"/>
+        <line num="18" count="13" type="stmt"/>
+        <line num="19" count="13" type="cond" truecount="2" falsecount="0"/>
+        <line num="20" count="11" type="stmt"/>
+        <line num="22" count="11" type="stmt"/>
+        <line num="23" count="11" type="cond" truecount="2" falsecount="0"/>
+        <line num="24" count="10" type="cond" truecount="2" falsecount="0"/>
+        <line num="25" count="8" type="stmt"/>
+        <line num="30" count="10" type="stmt"/>
+        <line num="31" count="7" type="cond" truecount="2" falsecount="0"/>
+        <line num="36" count="3" type="cond" truecount="2" falsecount="0"/>
+        <line num="41" count="10" type="cond" truecount="2" falsecount="0"/>
+        <line num="46" count="1" type="stmt"/>
+        <line num="49" count="2" type="stmt"/>
+        <line num="53" count="2" type="stmt"/>
+        <line num="54" count="11" type="stmt"/>
+        <line num="55" count="11" type="stmt"/>
+        <line num="56" count="44" type="stmt"/>
+        <line num="58" count="23" type="stmt"/>
+        <line num="60" count="11" type="stmt"/>
+      </file>
+      <file name="redux-easy-actions.ts" path="/Users/jcoy/workspace/redux-easy-actions-lib/src/redux-easy-actions.ts">
+        <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <line num="5" count="1" type="stmt"/>
+        <line num="6" count="1" type="stmt"/>
+        <line num="7" count="1" type="stmt"/>
+        <line num="9" count="1" type="stmt"/>
+      </file>
+    </metrics>
+  </project>
+</coverage>

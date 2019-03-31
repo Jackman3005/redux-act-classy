@@ -1,5 +1,5 @@
 import {Action, AnyAction} from 'redux'
-import {EasyAction, AsyncActionStatic} from './AsyncAction'
+import {EasyAction, EasyActionStatic} from './EasyAction'
 
 type DoAsyncResult<T, U = AsyncActionWithInferredResult<T>> = {
     [k in keyof U]: U[k]
@@ -10,31 +10,31 @@ type AsyncActionWithInferredResult<T> = T extends { doAsync: (...args: any[]) =>
 type NonFunctionPropertyNames<T> = { [K in keyof T]: T[K] extends Function ? never : K }[keyof T];
 type DataPropertiesOnly<T> = Pick<T, NonFunctionPropertyNames<T>>;
 
-interface StartAction<T extends EasyAction<OUT | void>, OUT> {
+export interface StartAction<T extends EasyAction<OUT | void>, OUT> {
     type: string;
     actionData: DataPropertiesOnly<T>;
 }
 
-interface SuccessAction<T extends EasyAction<OUT | void>, OUT> {
+export interface SuccessAction<T extends EasyAction<OUT | void>, OUT> {
     type: string;
     actionData: DataPropertiesOnly<T>;
     successResult: OUT;
 }
 
-interface ErrorAction<T extends EasyAction<OUT | void>, OUT> {
+export interface ErrorAction<T extends EasyAction<OUT | void>, OUT> {
     type: string;
     actionData: DataPropertiesOnly<T>;
     errorResult: any;
 }
 
-interface CompleteAction<T extends EasyAction<OUT | void>, OUT> {
+export interface CompleteAction<T extends EasyAction<OUT | void>, OUT> {
     type: string;
     actionData: DataPropertiesOnly<T>;
 }
 
 
 export function isAction<T extends EasyAction<OUT | void>,
-    U extends AsyncActionStatic<OUT, T>,
+    U extends EasyActionStatic<OUT, T>,
     OUT extends DoAsyncResult<T>>
 (action: AnyAction, actionClass: (new (...args: any[]) => T) & U)
     : action is DataPropertiesOnly<T> & Action {
@@ -42,7 +42,7 @@ export function isAction<T extends EasyAction<OUT | void>,
 }
 
 export function beforeStart<T extends EasyAction<OUT | void>,
-    U extends AsyncActionStatic<OUT, T>,
+    U extends EasyActionStatic<OUT, T>,
     OUT extends DoAsyncResult<T>>
 (action: AnyAction, actionClass: (new (...args: any[]) => T) & U)
     : action is StartAction<T, OUT> {
@@ -50,7 +50,7 @@ export function beforeStart<T extends EasyAction<OUT | void>,
 }
 
 export function afterSuccess<T extends EasyAction<OUT | void>,
-    U extends AsyncActionStatic<OUT, T>,
+    U extends EasyActionStatic<OUT, T>,
     OUT extends DoAsyncResult<T>>
 (action: AnyAction, actionClass: (new (...args: any[]) => T) & U)
     : action is SuccessAction<T, OUT> {
@@ -58,7 +58,7 @@ export function afterSuccess<T extends EasyAction<OUT | void>,
 }
 
 export function afterError<T extends EasyAction<OUT | void>,
-    U extends AsyncActionStatic<OUT, T>,
+    U extends EasyActionStatic<OUT, T>,
     OUT extends DoAsyncResult<T>>
 (action: AnyAction, actionClass: (new (...args: any[]) => T) & U)
     : action is ErrorAction<T, OUT> {
@@ -66,7 +66,7 @@ export function afterError<T extends EasyAction<OUT | void>,
 }
 
 export function afterComplete<T extends EasyAction<OUT | void>,
-    U extends AsyncActionStatic<OUT, T>,
+    U extends EasyActionStatic<OUT, T>,
     OUT extends DoAsyncResult<T>>
 (action: AnyAction, actionClass: (new (...args: any[]) => T) & U)
     : action is CompleteAction<T, OUT> {

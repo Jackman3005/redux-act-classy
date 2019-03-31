@@ -1,4 +1,4 @@
-import {EasyAction} from './EasyAction'
+import {EasyAction} from '../src/EasyAction'
 
 describe('EasyAction', () => {
     test('user added fields work', () => {

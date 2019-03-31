@@ -15,7 +15,7 @@ export interface EasyAction<OUT = void> extends Action {
 }
 
 export function EasyAction<OUT = void>(type: string): EasyActionStatic<OUT, EasyAction<OUT>> {
-    class _Action implements Action {
+    class ActionImpl implements Action {
         public static OnStart = `${type}-start`
         public static OnComplete = `${type}-complete`
         public static OnSuccess = `${type}-success`
@@ -25,5 +25,5 @@ export function EasyAction<OUT = void>(type: string): EasyActionStatic<OUT, Easy
         public readonly type = type
     }
 
-    return _Action as EasyActionStatic<OUT, EasyAction<OUT>>
+    return ActionImpl as EasyActionStatic<OUT, EasyAction<OUT>>
 }
