@@ -1,5 +1,5 @@
 TN:
-SF:/Users/jcoy/workspace/redux-easy-actions-lib/src/EasyAction.ts
+SF:/Users/jcoy/workspace/redux-easy-actions/src/EasyAction.ts
 FN:17,EasyAction
 FN:18,(anonymous_1)
 FNF:2
@@ -22,7 +22,7 @@ BRF:0
 BRH:0
 end_of_record
 TN:
-SF:/Users/jcoy/workspace/redux-easy-actions-lib/src/Helpers.ts
+SF:/Users/jcoy/workspace/redux-easy-actions/src/Helpers.ts
 FN:36,isAction
 FN:44,beforeStart
 FN:52,afterSuccess
@@ -51,7 +51,7 @@ BRF:0
 BRH:0
 end_of_record
 TN:
-SF:/Users/jcoy/workspace/redux-easy-actions-lib/src/Middleware.ts
+SF:/Users/jcoy/workspace/redux-easy-actions/src/Middleware.ts
 FN:12,(anonymous_2)
 FN:13,(anonymous_3)
 FN:13,(anonymous_4)
@@ -116,7 +116,7 @@ BRF:12
 BRH:12
 end_of_record
 TN:
-SF:/Users/jcoy/workspace/redux-easy-actions-lib/src/redux-easy-actions.ts
+SF:/Users/jcoy/workspace/redux-easy-actions/src/redux-easy-actions.ts
 FNF:0
 FNH:0
 DA:5,1
