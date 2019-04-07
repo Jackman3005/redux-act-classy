@@ -1,4 +1,4 @@
 .idea/*
 node_modules/*
-*.js
+src/*.js
 .rpt2_cache

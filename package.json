@@ -12,7 +12,7 @@
   "author": "Jack Coy <jackman3000@gmail.com>",
   "repository": {
     "type": "git",
-    "url": ""
+    "url": "https://github.com/jackman3005/redux-easy-actions"
   },
   "license": "MIT",
   "engines": {
