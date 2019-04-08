@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1554615065797" clover="3.2.0">
-  <project timestamp="1554615065797" name="All files">
-    <metrics statements="48" coveredstatements="48" conditionals="12" coveredconditionals="12" methods="17" coveredmethods="17" elements="77" coveredelements="77" complexity="0" loc="48" ncloc="48" packages="1" files="4" classes="4">
+<coverage generated="1554689050760" clover="3.2.0">
+  <project timestamp="1554689050760" name="All files">
+    <metrics statements="52" coveredstatements="52" conditionals="12" coveredconditionals="12" methods="17" coveredmethods="17" elements="81" coveredelements="81" complexity="0" loc="52" ncloc="52" packages="1" files="4" classes="4">
       <file name="EasyAction.ts" path="/Users/jcoy/workspace/redux-easy-actions/src/EasyAction.ts">
         <metrics statements="10" coveredstatements="10" conditionals="0" coveredconditionals="0" methods="2" coveredmethods="2"/>
         <line num="17" count="4" type="stmt"/>
@@ -56,11 +56,15 @@
         <line num="60" count="11" type="stmt"/>
       </file>
       <file name="redux-easy-actions.ts" path="/Users/jcoy/workspace/redux-easy-actions/src/redux-easy-actions.ts">
-        <metrics statements="4" coveredstatements="4" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
+        <metrics statements="8" coveredstatements="8" conditionals="0" coveredconditionals="0" methods="0" coveredmethods="0"/>
         <line num="5" count="1" type="stmt"/>
         <line num="6" count="1" type="stmt"/>
         <line num="7" count="1" type="stmt"/>
+        <line num="8" count="1" type="stmt"/>
         <line num="9" count="1" type="stmt"/>
+        <line num="10" count="1" type="stmt"/>
+        <line num="11" count="1" type="stmt"/>
+        <line num="12" count="1" type="stmt"/>
       </file>
     </metrics>
   </project>
