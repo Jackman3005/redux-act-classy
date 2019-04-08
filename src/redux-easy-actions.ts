@@ -2,6 +2,8 @@
 // import "core-js/fn/array.find"
 // ...
 
+import 'core-js/features/promise'
+
 export { EasyAction } from './EasyAction'
 export { easyActionsMiddleware } from './Middleware'
 export {
