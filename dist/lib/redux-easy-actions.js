@@ -3,6 +3,7 @@
 // import "core-js/fn/array.find"
 // ...
 Object.defineProperty(exports, "__esModule", { value: true });
+require("core-js/features/promise");
 var EasyAction_1 = require("./EasyAction");
 exports.EasyAction = EasyAction_1.EasyAction;
 var Middleware_1 = require("./Middleware");
