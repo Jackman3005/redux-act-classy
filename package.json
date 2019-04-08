@@ -9,7 +9,7 @@
   "files": [
     "dist"
   ],
-  "author": "Jack Coy <jackman3000@gmail.com>",
+  "author": "Jack Coy <redux-easy-actions@googlegroups.com>",
   "repository": {
     "type": "git",
     "url": "https://github.com/jackman3005/redux-easy-actions"
