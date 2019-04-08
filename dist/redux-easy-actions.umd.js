@@ -1,8 +1,8 @@
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
-    typeof define === 'function' && define.amd ? define(factory) :
-    (global.reduxEasyActions = factory());
-}(this, (function () { 'use strict';
+    typeof exports === 'object' && typeof module !== 'undefined' ? factory(exports) :
+    typeof define === 'function' && define.amd ? define(['exports'], factory) :
+    (factory((global.reduxEasyActions = {})));
+}(this, (function (exports) { 'use strict';
 
     function EasyAction(type) {
         var ActionImpl = /** @class */ (function () {
@@ -17210,17 +17210,16 @@
     }
 
     // Import here Polyfills if needed. Recommended core-js (npm i -D core-js)
-    var reduxEasyActions = {
-        EasyAction: EasyAction,
-        easyActionsMiddleware: easyActionsMiddleware,
-        isAction: isAction,
-        beforeStart: beforeStart,
-        afterSuccess: afterSuccess,
-        afterError: afterError,
-        afterComplete: afterComplete,
-    };
 
-    return reduxEasyActions;
+    exports.EasyAction = EasyAction;
+    exports.easyActionsMiddleware = easyActionsMiddleware;
+    exports.afterComplete = afterComplete;
+    exports.afterError = afterError;
+    exports.afterSuccess = afterSuccess;
+    exports.beforeStart = beforeStart;
+    exports.isAction = isAction;
+
+    Object.defineProperty(exports, '__esModule', { value: true });
 
 })));
 //# sourceMappingURL=redux-easy-actions.umd.js.map

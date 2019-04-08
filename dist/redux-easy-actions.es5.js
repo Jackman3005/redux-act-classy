@@ -17204,15 +17204,6 @@ function afterComplete(action, actionClass) {
 }
 
 // Import here Polyfills if needed. Recommended core-js (npm i -D core-js)
-var reduxEasyActions = {
-    EasyAction: EasyAction,
-    easyActionsMiddleware: easyActionsMiddleware,
-    isAction: isAction,
-    beforeStart: beforeStart,
-    afterSuccess: afterSuccess,
-    afterError: afterError,
-    afterComplete: afterComplete,
-};
 
-export default reduxEasyActions;
+export { EasyAction, easyActionsMiddleware, afterComplete, afterError, afterSuccess, beforeStart, isAction };
 //# sourceMappingURL=redux-easy-actions.es5.js.map
