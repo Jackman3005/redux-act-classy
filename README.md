@@ -1,5 +1,8 @@
 # Redux Easy Actions
 
+[![Coverage Status](https://coveralls.io/repos/github/Jackman3005/redux-easy-actions/badge.svg?branch=master)](https://coveralls.io/github/Jackman3005/redux-easy-actions?branch=master)
+
+
 ## Motivation
 I came up with some of the ideas for this library while trudging
 through the action portion of the redux ecosystem.
