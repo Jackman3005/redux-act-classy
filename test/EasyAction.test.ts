@@ -1,4 +1,5 @@
 import { EasyAction } from '../src/redux-easy-actions'
+import { uniq } from 'lodash'
 
 describe('EasyAction', () => {
   test('user added fields work', () => {
@@ -31,6 +32,46 @@ describe('EasyAction', () => {
       expect(TestAction.OnSuccess).toBe('my-type-success')
       expect(TestAction.OnError).toBe('my-type-error')
       expect(TestAction.OnComplete).toBe('my-type-complete')
+    })
+
+    describe('when type is not provided', () => {
+      test('will generate type', () => {
+        class GeneratedTypeAction extends EasyAction() {}
+
+        const action = new GeneratedTypeAction()
+
+        const generatedType = action.type
+
+        expect(generatedType).toMatch(/^EasyAction-[0-9]{1,3}$/)
+        expect(GeneratedTypeAction.TYPE).toBe(generatedType)
+        expect(GeneratedTypeAction.OnStart).toBe(generatedType + '-start')
+        expect(GeneratedTypeAction.OnSuccess).toBe(generatedType + '-success')
+        expect(GeneratedTypeAction.OnError).toBe(generatedType + '-error')
+        expect(GeneratedTypeAction.OnComplete).toBe(generatedType + '-complete')
+      })
+
+      test('can create 1000 generated types without colliding', () => {
+        const types: string[] = []
+        for (let i = 0; i < 1000; i++) {
+          class GeneratedTypeAction extends EasyAction() {}
+
+          types.push(new GeneratedTypeAction().type)
+        }
+        expect(uniq(types)).toHaveLength(1000)
+      })
+    })
+    describe('when user uses same type twice', () => {
+      test('user is informed with a warning', () => {
+        const warnSpy = spyOn(console, 'warn')
+
+        class ActionA extends EasyAction('my-action') {}
+
+        class ActionB extends EasyAction('my-action') {}
+
+        expect(warnSpy).toHaveBeenCalled()
+        const warningMessage = warnSpy.calls.first().args[0]
+        expect(warningMessage).toContain('my-action')
+      })
     })
   })
 
