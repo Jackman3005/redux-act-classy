@@ -10,4 +10,4 @@ export interface EasyActionStatic<OUT, T extends EasyAction<OUT | void>> {
 export interface EasyAction<OUT = void> extends Action {
     doAsync: (dispatch: Dispatch, getState: () => any) => Promise<OUT | undefined>;
 }
-export declare function EasyAction<OUT = void>(type: string): EasyActionStatic<OUT, EasyAction<OUT>>;
+export declare function EasyAction<OUT = void>(type?: string): EasyActionStatic<OUT, EasyAction<OUT>>;
