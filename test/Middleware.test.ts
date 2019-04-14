@@ -40,7 +40,7 @@ describe('Easy Actions Middleware', () => {
 
   describe('when action is a class', () => {
     it('copies the data to a plain js object', () => {
-      class TestAction extends EasyAction('class-action') {
+      class TestAction extends EasyAction() {
         someStaticData = '👍 data'
 
         someFunction() {
@@ -59,7 +59,7 @@ describe('Easy Actions Middleware', () => {
       const result = buildMiddleware()(new TestAction('🚀 data'))
 
       expect(next).toHaveBeenCalledWith({
-        type: 'class-action',
+        type: TestAction.TYPE,
         someStaticData: '👍 data',
         someDynamicData: '🚀 data'
       })
@@ -72,7 +72,7 @@ describe('Easy Actions Middleware', () => {
         mockDoAsync = jest.fn()
       })
 
-      class TestAsyncAction extends EasyAction('class-action') {
+      class TestAsyncAction extends EasyAction() {
         doAsync = async (...args: any[]) => {
           return this.doAsyncImpl(...args)
         }
@@ -122,7 +122,7 @@ describe('Easy Actions Middleware', () => {
 
           expect(dispatch).toHaveBeenCalledWith({
             type: TestAsyncAction.OnStart,
-            actionData: { type: 'class-action', data: 'some-data' }
+            actionData: { type: TestAsyncAction.TYPE, data: 'some-data' }
           })
         })
         describe('when doAsync promise is resolved', () => {
@@ -134,7 +134,7 @@ describe('Easy Actions Middleware', () => {
 
             expect(dispatch).toHaveBeenCalledWith({
               type: TestAsyncAction.OnSuccess,
-              actionData: { type: 'class-action', data: 'some-data' },
+              actionData: { type: TestAsyncAction.TYPE, data: 'some-data' },
               successResult: { some: 'success-response' }
             })
           })
@@ -145,7 +145,7 @@ describe('Easy Actions Middleware', () => {
 
             expect(dispatch).toHaveBeenCalledWith({
               type: TestAsyncAction.OnComplete,
-              actionData: { type: 'class-action', data: 'some-data' }
+              actionData: { type: TestAsyncAction.TYPE, data: 'some-data' }
             })
           })
         })
@@ -158,7 +158,7 @@ describe('Easy Actions Middleware', () => {
 
             expect(dispatch).toHaveBeenCalledWith({
               type: TestAsyncAction.OnError,
-              actionData: { type: 'class-action', data: 'some-data' },
+              actionData: { type: TestAsyncAction.TYPE, data: 'some-data' },
               errorResult: { some: 'error-response' }
             })
           })
@@ -169,7 +169,7 @@ describe('Easy Actions Middleware', () => {
 
             expect(dispatch).toHaveBeenCalledWith({
               type: TestAsyncAction.OnComplete,
-              actionData: { type: 'class-action', data: 'some-data' }
+              actionData: { type: TestAsyncAction.TYPE, data: 'some-data' }
             })
           })
         })
