@@ -173,6 +173,32 @@ describe('Easy Actions Middleware', () => {
             })
           })
         })
+        describe('when doAsync function throws an error', () => {
+          it('dispatches OnError action', async () => {
+            mockDoAsync.mockImplementation(() => {
+              throw 'some error occurred!!'
+            })
+            await middleware(new TestAsyncAction(mockDoAsync, 'some-data'))
+
+            expect(dispatch).toHaveBeenCalledWith({
+              type: TestAsyncAction.OnError,
+              actionData: { type: TestAsyncAction.TYPE, data: 'some-data' },
+              errorResult: 'some error occurred!!'
+            })
+          })
+
+          it('dispatches OnComplete action', async () => {
+            mockDoAsync.mockImplementation(() => {
+              throw 'some error occurred!!'
+            })
+            await middleware(new TestAsyncAction(mockDoAsync, 'some-data'))
+
+            expect(dispatch).toHaveBeenCalledWith({
+              type: TestAsyncAction.OnComplete,
+              actionData: { type: TestAsyncAction.TYPE, data: 'some-data' }
+            })
+          })
+        })
       })
 
       describe('when not dispatching lifecycle actions', () => {
