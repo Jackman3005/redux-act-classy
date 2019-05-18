@@ -1,6 +1,6 @@
 # Redux Act Classy
-Make Redux classier with ASync Lifecycle Actions that take a 
-modern approach to simplifying redux action creation.
+Make Redux classier with Async Lifecycle Actions that take a 
+modern approach to redux action creation.
 
 [![Build Status](https://travis-ci.org/Jackman3005/redux-act-classy.svg?branch=master)](https://travis-ci.org/Jackman3005/redux-act-classy)
 [![Coverage Status](https://coveralls.io/repos/github/Jackman3005/redux-act-classy/badge.svg?branch=master)](https://coveralls.io/github/Jackman3005/redux-act-classy?branch=master)
@@ -60,11 +60,11 @@ class LoadJokeAction extends Classy<JokeDetails>() {
 dispatch(new MyAction('some-data'))
 ```
 ##### An async action
-ASynchronous actions are not directly received by reducers.
-Instead, LifeCycle actions are automatically dispatched
+Asynchronous actions are not directly received by reducers.
+Instead, Lifecycle actions are automatically dispatched
 to report information on the state of asynchronous activity. 
 ```typescript
-dispatch(new LoadJokeAction()) //nothing interesting here
+dispatch(new LoadJokeAction()) // nothing interesting here
 ```
 <br />
 
@@ -79,7 +79,7 @@ if (isAction(action, MyAction)) {
   // action is a MyAction
 }
 
-// Identify ASynchronous Lifecycle actions
+// Identify asynchronous lifecycle actions
 if (beforeStart(action, LoadJokeAction)) {
   state = {
     showSpinner: true
@@ -100,7 +100,7 @@ switch(action.type) {
     // action is a MyAction
     
 
-  // Identify ASynchronous Lifecycle actions
+  // Identify asynchronous lifecycle actions
   case LoadJokeAction.OnStart:
     state = {
       showSpinner: true
@@ -133,7 +133,7 @@ convert them into plain object actions (removing all functions and leaving
 only data properties) before passing them along to the reducer functions.
 
 The middleware is responsible for calling `perform` on asynchronous
-actions and dispatching the LifeCycle Actions.
+actions and dispatching the Lifecycle Actions.
 
 ```javascript
 // You may optionally pass an object to the build method to configure the middleware
@@ -148,6 +148,9 @@ const reduxStore = createStore(
     compose(applyMiddleware(classyMiddleware))
 )
 ```
+
+<br />
+<br />
 
 ## Motivation
 I came up with some of the ideas for this library while trudging
