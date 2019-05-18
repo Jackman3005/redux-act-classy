@@ -1,7 +1,153 @@
 # Redux Act Classy
+Make Redux classier with ASync Lifecycle Actions that take a 
+modern approach to simplifying redux action creation.
 
-[![Coverage Status](https://coveralls.io/repos/github/Jackman3005/redux-act-classy/badge.svg?branch=master)](https://coveralls.io/github/Jackman3005/redux-act-classy?branch=master)
 [![Build Status](https://travis-ci.org/Jackman3005/redux-act-classy.svg?branch=master)](https://travis-ci.org/Jackman3005/redux-act-classy)
+[![Coverage Status](https://coveralls.io/repos/github/Jackman3005/redux-act-classy/badge.svg?branch=master)](https://coveralls.io/github/Jackman3005/redux-act-classy?branch=master)
+
+
+### Define a basic action
+##### A basic action with a generated type
+```javascript
+class MyAction extends Classy() {
+}
+```
+<br />
+
+##### A basic action with a manually specified type
+```javascript
+class MyAction extends Classy('my-action') {
+}
+```
+<br />
+
+##### A basic action with some data
+```typescript
+// Using TypeScript
+class MyAction extends Classy() {
+  constructor(readonly data: string) { super() }
+}
+```
+
+```javascript
+// Using JavaScript
+class MyAction extends Classy() {
+  constructor(data) { 
+    super()
+    this.data = data
+  }
+}
+```
+<br />
+
+### Define an asynchronous action
+```typescript
+class LoadJokeAction extends Classy<JokeDetails>() {
+    public perform = async (dispatch, getState) => {
+      // do something asynchronously... e.g. await fetch()
+      return {
+        setup: 'Two peanuts were walking down the street',
+        punchLine: 'One of them was a salted'
+      }
+    }
+}
+```
+<br />
+
+### Dispatch actions
+##### An action with data
+```typescript
+dispatch(new MyAction('some-data'))
+```
+##### An async action
+ASynchronous actions are not directly received by reducers.
+Instead, LifeCycle actions are automatically dispatched
+to report information on the state of asynchronous activity. 
+```typescript
+dispatch(new LoadJokeAction()) //nothing interesting here
+```
+<br />
+
+### Identify actions in your reducer function
+##### When using TypeScript
+[Typescript Type Guards](https://www.typescriptlang.org/docs/handbook/advanced-types.html#type-guards-and-differentiating-types)
+allow the reducer helper functions (`isAction`, `beforeStart`, `afterSuccess`, etc) to add type information to the action within the `if` block.
+
+```typescript
+// Identify basic actions
+if (isAction(action, MyAction)) {
+  // action is a MyAction
+}
+
+// Identify ASynchronous Lifecycle actions
+if (beforeStart(action, LoadJokeAction)) {
+  state = {
+    showSpinner: true
+  }
+} else if (afterSuccess(action, LoadJokeAction)) {
+  state = {
+    showSpinner: false,
+    joke: action.successResult
+  }
+}
+```
+##### When using JavaScript
+```javascript
+switch(action.type) {
+
+  // Identify basic actions
+  case MyAction.TYPE:
+    // action is a MyAction
+    
+
+  // Identify ASynchronous Lifecycle actions
+  case LoadJokeAction.OnStart:
+    state = {
+      showSpinner: true
+    }
+  case LoadJokeAction.OnSuccess:
+    state = {
+      showSpinner: false,
+      data: action.successResult.data
+    }
+}
+```
+<br />
+<br />
+
+## Set Up
+
+##### Add the package to your project
+```bash
+yarn add redux-act-classy
+
+# or
+
+npm install redux-act-classy --save
+```
+
+##### Add the middleware to your redux store
+In Redux you can only dispatch plain object actions. To get around
+this design, we need a middleware to intercept our Classy actions and
+convert them into plain object actions (removing all functions and leaving
+only data properties) before passing them along to the reducer functions.
+
+The middleware is responsible for calling `perform` on asynchronous
+actions and dispatching the LifeCycle Actions.
+
+```javascript
+// You may optionally pass an object to the build method to configure the middleware
+const classyMiddleware = buildAClassyMiddleware()
+
+const reduxStore = createStore(
+    combineReducers({
+        someReducer,
+        anotherReducer
+    }),
+    {},
+    compose(applyMiddleware(classyMiddleware))
+)
+```
 
 ## Motivation
 I came up with some of the ideas for this library while trudging

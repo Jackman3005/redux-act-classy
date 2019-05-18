@@ -1817,7 +1817,7 @@ _export({ target: 'Promise', stat: true }, {
 
 var typesInUse = [];
 function Classy(type) {
-    //@ts-ignore
+    // @ts-ignore
     if (this instanceof Classy) {
         console.error('Classy actions cannot be directly extended. \nTry using:  MyAction extends Classy() { } \nInstead of: MyAction extends Classy { }');
     }
