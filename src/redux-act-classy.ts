@@ -4,8 +4,8 @@
 
 import 'core-js/features/promise'
 
-export { EasyAction } from './EasyAction'
-export { easyActionsMiddleware } from './Middleware'
+export { Classy } from './ClassyAction'
+export { buildAClassyMiddleware } from './Middleware'
 export {
   afterComplete,
   afterError,

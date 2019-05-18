@@ -13,50 +13,58 @@ var __assign = (this && this.__assign) || function () {
 Object.defineProperty(exports, "__esModule", { value: true });
 var _ = require("lodash");
 var defaultConfig = {
-    dispatchLifecycleActions: true,
+    dispatchLifecycleActions: true
 };
-exports.easyActionsMiddleware = function (config) {
-    return function (_a) {
-        var dispatch = _a.dispatch, getState = _a.getState;
-        return function (next) { return function (action) {
-            var dispatchLifecycleActions = Object.assign(defaultConfig, config).dispatchLifecycleActions;
-            var actionIsAClass = !_.isPlainObject(action);
-            if (actionIsAClass) {
-                var actionAsObject_1 = extractNonFunctionFields(action);
-                var isAsynchronousAction = _.isFunction(action.doAsync);
-                if (isAsynchronousAction) {
-                    if (dispatchLifecycleActions) {
+exports.buildAClassyMiddleware = function (config) { return function (_a) {
+    var dispatch = _a.dispatch, getState = _a.getState;
+    return function (next) { return function (action) {
+        var dispatchLifecycleActions = Object.assign(defaultConfig, config).dispatchLifecycleActions;
+        var actionIsAClass = !_.isPlainObject(action);
+        if (actionIsAClass) {
+            var actionAsObject_1 = extractNonFunctionFields(action);
+            var isAsynchronousAction = _.isFunction(action.perform);
+            if (isAsynchronousAction) {
+                if (dispatchLifecycleActions) {
+                    dispatch({
+                        actionData: actionAsObject_1,
+                        type: action.constructor.OnStart
+                    });
+                }
+                return action
+                    .perform(dispatch, getState)
+                    .then(function (successResult) {
+                    return dispatchLifecycleActions &&
                         dispatch({
                             actionData: actionAsObject_1,
-                            type: action.constructor.OnStart,
+                            type: action.constructor.OnSuccess,
+                            successResult: successResult
                         });
-                    }
-                    return action.doAsync(dispatch, getState)
-                        .then(function (successResult) { return dispatchLifecycleActions && dispatch({
-                        actionData: actionAsObject_1,
-                        type: action.constructor.OnSuccess,
-                        successResult: successResult,
-                    }); })
-                        .catch(function (errorResult) { return dispatchLifecycleActions && dispatch({
-                        actionData: actionAsObject_1,
-                        type: action.constructor.OnError,
-                        errorResult: errorResult,
-                    }); })
-                        .finally(function () { return dispatchLifecycleActions && dispatch({
-                        actionData: actionAsObject_1,
-                        type: action.constructor.OnComplete,
-                    }); });
-                }
-                else {
-                    return next(__assign({}, actionAsObject_1));
-                }
+                })
+                    .catch(function (errorResult) {
+                    return dispatchLifecycleActions &&
+                        dispatch({
+                            actionData: actionAsObject_1,
+                            type: action.constructor.OnError,
+                            errorResult: errorResult
+                        });
+                })
+                    .finally(function () {
+                    return dispatchLifecycleActions &&
+                        dispatch({
+                            actionData: actionAsObject_1,
+                            type: action.constructor.OnComplete
+                        });
+                });
             }
             else {
-                return next(action);
+                return next(__assign({}, actionAsObject_1));
             }
-        }; };
-    };
-};
+        }
+        else {
+            return next(action);
+        }
+    }; };
+}; };
 var extractNonFunctionFields = function (obj) {
     var cleanedObj = {};
     Object.keys(obj)

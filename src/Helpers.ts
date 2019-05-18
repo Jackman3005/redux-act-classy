@@ -1,5 +1,5 @@
 import { Action, AnyAction } from 'redux'
-import { EasyAction, EasyActionStatic } from './EasyAction'
+import { ClassyAction, ClassyActionStatic } from './ClassyAction'
 
 type PerformResult<T, U = AsyncActionWithInferredResult<T>> = {
   [k in keyof U]: U[k]
@@ -15,31 +15,31 @@ type NonFunctionPropertyNames<T> = {
 }[keyof T]
 type DataPropertiesOnly<T> = Pick<T, NonFunctionPropertyNames<T>>
 
-export interface StartAction<T extends EasyAction<OUT | void>, OUT> {
+export interface StartAction<T extends ClassyAction<OUT | void>, OUT> {
   type: string
   actionData: DataPropertiesOnly<T>
 }
 
-export interface SuccessAction<T extends EasyAction<OUT | void>, OUT> {
+export interface SuccessAction<T extends ClassyAction<OUT | void>, OUT> {
   type: string
   actionData: DataPropertiesOnly<T>
   successResult: OUT
 }
 
-export interface ErrorAction<T extends EasyAction<OUT | void>, OUT> {
+export interface ErrorAction<T extends ClassyAction<OUT | void>, OUT> {
   type: string
   actionData: DataPropertiesOnly<T>
   errorResult: any
 }
 
-export interface CompleteAction<T extends EasyAction<OUT | void>, OUT> {
+export interface CompleteAction<T extends ClassyAction<OUT | void>, OUT> {
   type: string
   actionData: DataPropertiesOnly<T>
 }
 
 export function isAction<
-  T extends EasyAction<OUT | void>,
-  U extends EasyActionStatic<OUT, T>,
+  T extends ClassyAction<OUT | void>,
+  U extends ClassyActionStatic<OUT, T>,
   OUT extends PerformResult<T>
 >(
   action: AnyAction,
@@ -49,8 +49,8 @@ export function isAction<
 }
 
 export function beforeStart<
-  T extends EasyAction<OUT | void>,
-  U extends EasyActionStatic<OUT, T>,
+  T extends ClassyAction<OUT | void>,
+  U extends ClassyActionStatic<OUT, T>,
   OUT extends PerformResult<T>
 >(
   action: AnyAction,
@@ -60,8 +60,8 @@ export function beforeStart<
 }
 
 export function afterSuccess<
-  T extends EasyAction<OUT | void>,
-  U extends EasyActionStatic<OUT, T>,
+  T extends ClassyAction<OUT | void>,
+  U extends ClassyActionStatic<OUT, T>,
   OUT extends PerformResult<T>
 >(
   action: AnyAction,
@@ -71,8 +71,8 @@ export function afterSuccess<
 }
 
 export function afterError<
-  T extends EasyAction<OUT | void>,
-  U extends EasyActionStatic<OUT, T>,
+  T extends ClassyAction<OUT | void>,
+  U extends ClassyActionStatic<OUT, T>,
   OUT extends PerformResult<T>
 >(
   action: AnyAction,
@@ -82,8 +82,8 @@ export function afterError<
 }
 
 export function afterComplete<
-  T extends EasyAction<OUT | void>,
-  U extends EasyActionStatic<OUT, T>,
+  T extends ClassyAction<OUT | void>,
+  U extends ClassyActionStatic<OUT, T>,
   OUT extends PerformResult<T>
 >(
   action: AnyAction,

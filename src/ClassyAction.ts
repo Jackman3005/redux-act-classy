@@ -1,6 +1,6 @@
 import { Action, Dispatch } from 'redux'
 
-export interface EasyActionStatic<OUT, T extends EasyAction<OUT | void>> {
+export interface ClassyActionStatic<OUT, T extends ClassyAction<OUT | void>> {
   new (...args: any[]): T
 
   TYPE: string
@@ -10,16 +10,23 @@ export interface EasyActionStatic<OUT, T extends EasyAction<OUT | void>> {
   OnError: string
 }
 
-export interface EasyAction<OUT = void> extends Action {
+export interface ClassyAction<OUT = void> extends Action {
   perform: (dispatch: Dispatch, getState: () => any) => Promise<OUT | undefined>
 }
 
 const typesInUse: string[] = []
-export function EasyAction<OUT = void>(
+export function Classy<OUT = void>(
   type?: string
-): EasyActionStatic<OUT, EasyAction<OUT>> {
+): ClassyActionStatic<OUT, ClassyAction<OUT>> {
+  // @ts-ignore
+  if (this instanceof Classy) {
+    console.error(
+      'Classy actions cannot be directly extended. \nTry using:  MyAction extends Classy() { } \nInstead of: MyAction extends Classy { }'
+    )
+  }
+
   if (!type) {
-    type = 'EasyAction-' + typesInUse.length
+    type = 'ClassyAction-' + typesInUse.length
   }
 
   if (typesInUse.includes(type)) {
@@ -42,5 +49,5 @@ export function EasyAction<OUT = void>(
     public readonly type = type
   }
 
-  return ActionImpl as EasyActionStatic<OUT, EasyAction<OUT>>
+  return ActionImpl as ClassyActionStatic<OUT, ClassyAction<OUT>>
 }

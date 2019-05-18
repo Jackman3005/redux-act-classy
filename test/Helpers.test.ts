@@ -1,14 +1,14 @@
-import { EasyAction } from '../src/redux-easy-actions'
 import {
+  Classy,
   afterComplete,
   afterError,
   afterSuccess,
   beforeStart,
   isAction
-} from '../src/Helpers'
+} from '../src/redux-act-classy'
 
-describe('redux easy action helper functions', () => {
-  class TestAction extends EasyAction('test-type') {
+describe('redux act classy helper functions', () => {
+  class TestAction extends Classy('test-type') {
     constructor(readonly myData: string) {
       super()
     }

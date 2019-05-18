@@ -1,18 +1,18 @@
 {
-  "name": "redux-easy-actions",
+  "name": "redux-act-classy",
   "version": "0.0.0-development",
   "description": "",
   "keywords": [],
-  "main": "dist/redux-easy-actions.umd.js",
-  "module": "dist/redux-easy-actions.es5.js",
-  "typings": "dist/types/redux-easy-actions.d.ts",
+  "main": "dist/redux-act-classy.umd.js",
+  "module": "dist/redux-act-classy.es5.js",
+  "typings": "dist/types/redux-act-classy.d.ts",
   "files": [
     "dist"
   ],
-  "author": "Jack Coy <redux-easy-actions@googlegroups.com>",
+  "author": "Jack Coy <redux-act-classy@googlegroups.com>",
   "repository": {
     "type": "git",
-    "url": "https://github.com/Jackman3005/redux-easy-actions"
+    "url": "https://github.com/Jackman3005/redux-act-classy"
   },
   "license": "MIT",
   "engines": {

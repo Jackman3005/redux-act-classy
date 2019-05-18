@@ -1,5 +1,5 @@
-import { EasyActionMiddlewareConfig } from '../src/Middleware'
-import { EasyAction, easyActionsMiddleware } from '../src/redux-easy-actions'
+import { MiddlewareConfig } from '../src/Middleware'
+import { Classy, buildAClassyMiddleware } from '../src/redux-act-classy'
 import { AnyAction } from 'redux'
 import Mock = jest.Mock
 
@@ -9,7 +9,7 @@ interface TestState {
   }
 }
 
-describe('Easy Actions Middleware', () => {
+describe('A Classy Middleware', () => {
   let dispatch: Mock
   let getState: () => TestState
   let next: Mock
@@ -20,8 +20,8 @@ describe('Easy Actions Middleware', () => {
     getState = () => ({ someReducer: { someData: 'E-Z_P-Z' } })
   })
 
-  const buildMiddleware = (config?: Partial<EasyActionMiddlewareConfig>) => {
-    return easyActionsMiddleware(config)({ dispatch, getState })(next)
+  const buildMiddleware = (config?: Partial<MiddlewareConfig>) => {
+    return buildAClassyMiddleware(config)({ dispatch, getState })(next)
   }
 
   describe('when action is plain object', () => {
@@ -40,7 +40,7 @@ describe('Easy Actions Middleware', () => {
 
   describe('when action is a class', () => {
     it('copies the data to a plain js object', () => {
-      class TestAction extends EasyAction() {
+      class TestAction extends Classy() {
         someStaticData = '👍 data'
 
         someFunction() {
@@ -72,7 +72,7 @@ describe('Easy Actions Middleware', () => {
         mockPerform = jest.fn()
       })
 
-      class TestAsyncAction extends EasyAction() {
+      class TestAsyncAction extends Classy() {
         perform = async (...args: any[]) => {
           return this.performImpl(...args)
         }

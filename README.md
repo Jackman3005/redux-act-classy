@@ -1,7 +1,7 @@
-# Redux Easy Actions
+# Redux Act Classy
 
-[![Coverage Status](https://coveralls.io/repos/github/Jackman3005/redux-easy-actions/badge.svg?branch=master)](https://coveralls.io/github/Jackman3005/redux-easy-actions?branch=master)
-
+[![Coverage Status](https://coveralls.io/repos/github/Jackman3005/redux-act-classy/badge.svg?branch=master)](https://coveralls.io/github/Jackman3005/redux-act-classy?branch=master)
+[![Build Status](https://travis-ci.org/Jackman3005/redux-act-classy.svg?branch=master)](https://travis-ci.org/Jackman3005/redux-act-classy)
 
 ## Motivation
 I came up with some of the ideas for this library while trudging
@@ -45,7 +45,7 @@ want to add a feature. Feel free to reach out or send a pull request!
 
 ## Task List
 
-- Could add a reducer that stores all OnStart, etc states for each Action. 
+- Could add a reducer that stores all lifecycle states: OnStart, etc for each Action. 
 e.g. `state.asyncActions[MyAction.TYPE].status`.
 Multiple async actions of the same type (potentially with different data) may be going at the same time... (`new DeleteJokeAction({id: 5})`)
  
@@ -56,4 +56,4 @@ Multiple async actions of the same type (potentially with different data) may be
 - Bug: Fix perform return types that are arrays. only able to determine they are any[] atm
 
 - `perform` takes a `getState: () => T` T should be the defined top level state interface for
-  users projects... How can we make this generic (without passing it into EACH new EasyAction)...
+  users projects... How can we make this generic (without passing it into EACH new ClassyAction)...

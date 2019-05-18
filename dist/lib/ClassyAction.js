@@ -1,9 +1,13 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 var typesInUse = [];
-function EasyAction(type) {
+function Classy(type) {
+    //@ts-ignore
+    if (this instanceof Classy) {
+        console.error('Classy actions cannot be directly extended. \nTry using:  MyAction extends Classy() { } \nInstead of: MyAction extends Classy { }');
+    }
     if (!type) {
-        type = 'EasyAction-' + typesInUse.length;
+        type = 'ClassyAction-' + typesInUse.length;
     }
     if (typesInUse.includes(type)) {
         console.warn("WARNING - this type: '" +
@@ -25,5 +29,5 @@ function EasyAction(type) {
     }());
     return ActionImpl;
 }
-exports.EasyAction = EasyAction;
-//# sourceMappingURL=EasyAction.js.map
+exports.Classy = Classy;
+//# sourceMappingURL=ClassyAction.js.map

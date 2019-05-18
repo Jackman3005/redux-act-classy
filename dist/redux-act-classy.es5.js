@@ -1816,9 +1816,13 @@ _export({ target: 'Promise', stat: true }, {
 });
 
 var typesInUse = [];
-function EasyAction(type) {
+function Classy(type) {
+    //@ts-ignore
+    if (this instanceof Classy) {
+        console.error('Classy actions cannot be directly extended. \nTry using:  MyAction extends Classy() { } \nInstead of: MyAction extends Classy { }');
+    }
     if (!type) {
-        type = 'EasyAction-' + typesInUse.length;
+        type = 'ClassyAction-' + typesInUse.length;
     }
     if (typesInUse.includes(type)) {
         console.warn("WARNING - this type: '" +
@@ -1868,50 +1872,58 @@ var __assign = function() {
 };
 
 var defaultConfig = {
-    dispatchLifecycleActions: true,
+    dispatchLifecycleActions: true
 };
-var easyActionsMiddleware = function (config) {
-    return function (_a) {
-        var dispatch = _a.dispatch, getState = _a.getState;
-        return function (next) { return function (action) {
-            var dispatchLifecycleActions = Object.assign(defaultConfig, config).dispatchLifecycleActions;
-            var actionIsAClass = !isPlainObject(action);
-            if (actionIsAClass) {
-                var actionAsObject_1 = extractNonFunctionFields(action);
-                var isAsynchronousAction = isFunction(action.doAsync);
-                if (isAsynchronousAction) {
-                    if (dispatchLifecycleActions) {
+var buildAClassyMiddleware = function (config) { return function (_a) {
+    var dispatch = _a.dispatch, getState = _a.getState;
+    return function (next) { return function (action) {
+        var dispatchLifecycleActions = Object.assign(defaultConfig, config).dispatchLifecycleActions;
+        var actionIsAClass = !isPlainObject(action);
+        if (actionIsAClass) {
+            var actionAsObject_1 = extractNonFunctionFields(action);
+            var isAsynchronousAction = isFunction(action.perform);
+            if (isAsynchronousAction) {
+                if (dispatchLifecycleActions) {
+                    dispatch({
+                        actionData: actionAsObject_1,
+                        type: action.constructor.OnStart
+                    });
+                }
+                return action
+                    .perform(dispatch, getState)
+                    .then(function (successResult) {
+                    return dispatchLifecycleActions &&
                         dispatch({
                             actionData: actionAsObject_1,
-                            type: action.constructor.OnStart,
+                            type: action.constructor.OnSuccess,
+                            successResult: successResult
                         });
-                    }
-                    return action.doAsync(dispatch, getState)
-                        .then(function (successResult) { return dispatchLifecycleActions && dispatch({
-                        actionData: actionAsObject_1,
-                        type: action.constructor.OnSuccess,
-                        successResult: successResult,
-                    }); })
-                        .catch(function (errorResult) { return dispatchLifecycleActions && dispatch({
-                        actionData: actionAsObject_1,
-                        type: action.constructor.OnError,
-                        errorResult: errorResult,
-                    }); })
-                        .finally(function () { return dispatchLifecycleActions && dispatch({
-                        actionData: actionAsObject_1,
-                        type: action.constructor.OnComplete,
-                    }); });
-                }
-                else {
-                    return next(__assign({}, actionAsObject_1));
-                }
+                })
+                    .catch(function (errorResult) {
+                    return dispatchLifecycleActions &&
+                        dispatch({
+                            actionData: actionAsObject_1,
+                            type: action.constructor.OnError,
+                            errorResult: errorResult
+                        });
+                })
+                    .finally(function () {
+                    return dispatchLifecycleActions &&
+                        dispatch({
+                            actionData: actionAsObject_1,
+                            type: action.constructor.OnComplete
+                        });
+                });
             }
             else {
-                return next(action);
+                return next(__assign({}, actionAsObject_1));
             }
-        }; };
-    };
-};
+        }
+        else {
+            return next(action);
+        }
+    }; };
+}; };
 var extractNonFunctionFields = function (obj) {
     var cleanedObj = {};
     Object.keys(obj)
@@ -1940,5 +1952,5 @@ function afterComplete(action, actionClass) {
 
 // Import here Polyfills if needed. Recommended core-js (npm i -D core-js)
 
-export { EasyAction, easyActionsMiddleware, afterComplete, afterError, afterSuccess, beforeStart, isAction };
-//# sourceMappingURL=redux-easy-actions.es5.js.map
+export { Classy, buildAClassyMiddleware, afterComplete, afterError, afterSuccess, beforeStart, isAction };
+//# sourceMappingURL=redux-act-classy.es5.js.map

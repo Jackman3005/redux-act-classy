@@ -1,16 +1,16 @@
 import { Middleware } from 'redux'
 import * as _ from 'lodash'
 
-export interface EasyActionMiddlewareConfig {
+export interface MiddlewareConfig {
   dispatchLifecycleActions: boolean
 }
 
-const defaultConfig: EasyActionMiddlewareConfig = {
+const defaultConfig: MiddlewareConfig = {
   dispatchLifecycleActions: true
 }
 
-export const easyActionsMiddleware = (
-  config?: Partial<EasyActionMiddlewareConfig>
+export const buildAClassyMiddleware = (
+  config?: Partial<MiddlewareConfig>
 ): Middleware => ({ dispatch, getState }) => next => action => {
   const { dispatchLifecycleActions } = Object.assign(defaultConfig, config)
 
