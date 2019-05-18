@@ -156,7 +156,7 @@ const reduxStore = createStore(
 I came up with some of the ideas for this library while trudging
 through the action portion of the redux ecosystem.
 
-I've found it cumbersome to deal with 
+I've found it cumbersome to deal with
 - action creators
 - action types
 - accessing action data in reducers (esp. w/ type friendliness)
