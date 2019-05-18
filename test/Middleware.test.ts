@@ -66,19 +66,19 @@ describe('Easy Actions Middleware', () => {
       expect(next).toHaveBeenCalledTimes(1)
       expect(result).toEqual('next middleware result')
     })
-    describe('when doAsync function is present', () => {
-      let mockDoAsync: Mock
+    describe('when perform function is present', () => {
+      let mockPerform: Mock
       beforeEach(() => {
-        mockDoAsync = jest.fn()
+        mockPerform = jest.fn()
       })
 
       class TestAsyncAction extends EasyAction() {
-        doAsync = async (...args: any[]) => {
-          return this.doAsyncImpl(...args)
+        perform = async (...args: any[]) => {
+          return this.performImpl(...args)
         }
 
         constructor(
-          readonly doAsyncImpl: (...args: any[]) => Promise<any>,
+          readonly performImpl: (...args: any[]) => Promise<any>,
           readonly data?: string
         ) {
           super()
@@ -86,16 +86,16 @@ describe('Easy Actions Middleware', () => {
       }
 
       it('does not call next with original action', async () => {
-        buildMiddleware()(new TestAsyncAction(mockDoAsync))
+        buildMiddleware()(new TestAsyncAction(mockPerform))
 
         expect(next).not.toHaveBeenCalled()
       })
 
-      it('returns promise of doAsync call', done => {
+      it('returns promise of perform call', done => {
         dispatch
           .mockReturnValueOnce('dispatch-success')
           .mockReturnValueOnce('dispatch-complete')
-        const result = buildMiddleware()(new TestAsyncAction(mockDoAsync))
+        const result = buildMiddleware()(new TestAsyncAction(mockPerform))
 
         result.then((response: any) => {
           expect(response).toEqual('dispatch-complete')
@@ -103,10 +103,10 @@ describe('Easy Actions Middleware', () => {
         })
       })
 
-      it('calls doAsync with dispatcher and getState function', () => {
-        buildMiddleware()(new TestAsyncAction(mockDoAsync))
+      it('calls perform with dispatcher and getState function', () => {
+        buildMiddleware()(new TestAsyncAction(mockPerform))
 
-        expect(mockDoAsync).toHaveBeenCalledWith(dispatch, getState)
+        expect(mockPerform).toHaveBeenCalledWith(dispatch, getState)
       })
 
       describe('when dispatching lifecycle actions', () => {
@@ -118,19 +118,19 @@ describe('Easy Actions Middleware', () => {
         })
 
         it('dispatches OnStart action', () => {
-          middleware(new TestAsyncAction(mockDoAsync, 'some-data'))
+          middleware(new TestAsyncAction(mockPerform, 'some-data'))
 
           expect(dispatch).toHaveBeenCalledWith({
             type: TestAsyncAction.OnStart,
             actionData: { type: TestAsyncAction.TYPE, data: 'some-data' }
           })
         })
-        describe('when doAsync promise is resolved', () => {
+        describe('when perform promise is resolved', () => {
           it('dispatches OnSuccess action', async () => {
-            mockDoAsync.mockReturnValue(
+            mockPerform.mockReturnValue(
               Promise.resolve({ some: 'success-response' })
             )
-            await middleware(new TestAsyncAction(mockDoAsync, 'some-data'))
+            await middleware(new TestAsyncAction(mockPerform, 'some-data'))
 
             expect(dispatch).toHaveBeenCalledWith({
               type: TestAsyncAction.OnSuccess,
@@ -140,8 +140,8 @@ describe('Easy Actions Middleware', () => {
           })
 
           it('dispatches OnComplete action', async () => {
-            mockDoAsync.mockReturnValue(Promise.resolve())
-            await middleware(new TestAsyncAction(mockDoAsync, 'some-data'))
+            mockPerform.mockReturnValue(Promise.resolve())
+            await middleware(new TestAsyncAction(mockPerform, 'some-data'))
 
             expect(dispatch).toHaveBeenCalledWith({
               type: TestAsyncAction.OnComplete,
@@ -149,12 +149,12 @@ describe('Easy Actions Middleware', () => {
             })
           })
         })
-        describe('when doAsync promise is rejected', () => {
+        describe('when perform promise is rejected', () => {
           it('dispatches OnError action', async () => {
-            mockDoAsync.mockReturnValue(
+            mockPerform.mockReturnValue(
               Promise.reject({ some: 'error-response' })
             )
-            await middleware(new TestAsyncAction(mockDoAsync, 'some-data'))
+            await middleware(new TestAsyncAction(mockPerform, 'some-data'))
 
             expect(dispatch).toHaveBeenCalledWith({
               type: TestAsyncAction.OnError,
@@ -164,8 +164,8 @@ describe('Easy Actions Middleware', () => {
           })
 
           it('dispatches OnComplete action', async () => {
-            mockDoAsync.mockReturnValue(Promise.reject())
-            await middleware(new TestAsyncAction(mockDoAsync, 'some-data'))
+            mockPerform.mockReturnValue(Promise.reject())
+            await middleware(new TestAsyncAction(mockPerform, 'some-data'))
 
             expect(dispatch).toHaveBeenCalledWith({
               type: TestAsyncAction.OnComplete,
@@ -173,12 +173,12 @@ describe('Easy Actions Middleware', () => {
             })
           })
         })
-        describe('when doAsync function throws an error', () => {
+        describe('when perform function throws an error', () => {
           it('dispatches OnError action', async () => {
-            mockDoAsync.mockImplementation(() => {
+            mockPerform.mockImplementation(() => {
               throw 'some error occurred!!'
             })
-            await middleware(new TestAsyncAction(mockDoAsync, 'some-data'))
+            await middleware(new TestAsyncAction(mockPerform, 'some-data'))
 
             expect(dispatch).toHaveBeenCalledWith({
               type: TestAsyncAction.OnError,
@@ -188,10 +188,10 @@ describe('Easy Actions Middleware', () => {
           })
 
           it('dispatches OnComplete action', async () => {
-            mockDoAsync.mockImplementation(() => {
+            mockPerform.mockImplementation(() => {
               throw 'some error occurred!!'
             })
-            await middleware(new TestAsyncAction(mockDoAsync, 'some-data'))
+            await middleware(new TestAsyncAction(mockPerform, 'some-data'))
 
             expect(dispatch).toHaveBeenCalledWith({
               type: TestAsyncAction.OnComplete,
@@ -210,8 +210,8 @@ describe('Easy Actions Middleware', () => {
         })
 
         it('should not dispatch anything before or after Promise resolve', async () => {
-          mockDoAsync.mockReturnValue(Promise.resolve())
-          const promise = middleware(new TestAsyncAction(mockDoAsync))
+          mockPerform.mockReturnValue(Promise.resolve())
+          const promise = middleware(new TestAsyncAction(mockPerform))
 
           expect(dispatch).not.toHaveBeenCalled()
           await promise
@@ -219,8 +219,8 @@ describe('Easy Actions Middleware', () => {
         })
 
         it('should not dispatch anything before or after Promise reject', async () => {
-          mockDoAsync.mockReturnValue(Promise.reject())
-          const promise = middleware(new TestAsyncAction(mockDoAsync))
+          mockPerform.mockReturnValue(Promise.reject())
+          const promise = middleware(new TestAsyncAction(mockPerform))
 
           expect(dispatch).not.toHaveBeenCalled()
           await promise

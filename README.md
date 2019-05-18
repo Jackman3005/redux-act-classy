@@ -53,7 +53,7 @@ Multiple async actions of the same type (potentially with different data) may be
     - test that functions are not passed when deconstructing {...action}
 - Add tests to helper functions
 
-- Bug: Fix doAsync return types that are arrays. only able to determine they are any[] atm
+- Bug: Fix perform return types that are arrays. only able to determine they are any[] atm
 
-- `doAsync` takes a `getState: () => T` T should be the defined top level state interface for
+- `perform` takes a `getState: () => T` T should be the defined top level state interface for
   users projects... How can we make this generic (without passing it into EACH new EasyAction)...

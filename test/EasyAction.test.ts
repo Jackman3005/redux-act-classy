@@ -50,7 +50,7 @@ describe('EasyAction', () => {
         expect(GeneratedTypeAction.OnComplete).toBe(generatedType + '-complete')
       })
 
-      test('can create 1000 generated types without colliding', () => {
+      test('can create at least 1000 unique types', () => {
         const types: string[] = []
         for (let i = 0; i < 1000; i++) {
           class GeneratedTypeAction extends EasyAction() {}
@@ -75,7 +75,7 @@ describe('EasyAction', () => {
     })
   })
 
-  describe('doAsync', () => {
+  describe('perform', () => {
     test('promise return type matches the given OUT generic type', async () => {
       interface JokeDetails {
         setup: string
@@ -83,7 +83,7 @@ describe('EasyAction', () => {
       }
 
       class LoadJokeAction extends EasyAction<JokeDetails>('joke/load') {
-        public doAsync = async () => {
+        public perform = async () => {
           // do something asynchronously...
           return {
             setup: 'Two peanuts were walking down the street',
@@ -92,7 +92,7 @@ describe('EasyAction', () => {
         }
       }
 
-      const loadedJoke = await new LoadJokeAction().doAsync()
+      const loadedJoke = await new LoadJokeAction().perform()
 
       expect(loadedJoke.setup).toEqual(
         'Two peanuts were walking down the street'

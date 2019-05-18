@@ -11,7 +11,7 @@ export interface EasyActionStatic<OUT, T extends EasyAction<OUT | void>> {
 }
 
 export interface EasyAction<OUT = void> extends Action {
-  doAsync: (dispatch: Dispatch, getState: () => any) => Promise<OUT | undefined>
+  perform: (dispatch: Dispatch, getState: () => any) => Promise<OUT | undefined>
 }
 
 const typesInUse: string[] = []
