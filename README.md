@@ -136,6 +136,8 @@ The middleware is responsible for calling `perform` on asynchronous
 actions and dispatching the Lifecycle Actions.
 
 ```javascript
+import { buildAClassyMiddleware } from 'redux-act-classy'
+
 // You may optionally pass an object to the build method to configure the middleware
 const classyMiddleware = buildAClassyMiddleware()
 
