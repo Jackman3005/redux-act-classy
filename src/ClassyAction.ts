@@ -11,11 +11,29 @@ export interface ClassyActionStatic<OUT, T extends ClassyAction<OUT | void>> {
 }
 
 export interface ClassyAction<OUT = void> extends Action {
+  constructor: ClassyActionStatic<OUT, this>
   perform: (dispatch: Dispatch, getState: () => any) => Promise<OUT | undefined>
 }
 
 const typesInUse: string[] = []
-export function Classy<OUT = void>(
+
+class ClassyActionsConfiguration {
+  private _debugEnabled: boolean = false
+  public get debugEnabled() {
+    return this._debugEnabled
+  }
+  public set debugEnabled(enabled: boolean) {
+    this._debugEnabled = enabled
+  }
+}
+
+interface ClassyActionClassCreator {
+  <OUT>(optionalType?: string): ClassyActionStatic<OUT, ClassyAction<OUT>>
+
+  globalConfig: ClassyActionsConfiguration
+}
+
+export const Classy = function<OUT = void>(
   type?: string
 ): ClassyActionStatic<OUT, ClassyAction<OUT>> {
   // @ts-ignore
@@ -50,4 +68,6 @@ export function Classy<OUT = void>(
   }
 
   return ActionImpl as ClassyActionStatic<OUT, ClassyAction<OUT>>
-}
+} as ClassyActionClassCreator
+
+Classy.globalConfig = new ClassyActionsConfiguration()

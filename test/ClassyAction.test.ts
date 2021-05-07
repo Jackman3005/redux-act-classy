@@ -98,7 +98,9 @@ describe('a Classy action', () => {
 
       class LoadJokeAction extends Classy<JokeDetails>('joke/load') {
         public perform = async () => {
-          // do something asynchronously...
+          // do something asynchronously... e.g.
+          await new Promise(resolve => setTimeout(resolve, 5))
+
           return {
             setup: 'Two peanuts were walking down the street',
             punchLine: 'One of them was a salted'

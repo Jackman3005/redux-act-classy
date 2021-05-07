@@ -2,6 +2,7 @@ import { MiddlewareConfig } from '../src/Middleware'
 import { Classy, buildAClassyMiddleware } from '../src/redux-act-classy'
 import { AnyAction } from 'redux'
 import Mock = jest.Mock
+import SpyInstance = jest.SpyInstance
 
 interface TestState {
   someReducer: {
@@ -13,11 +14,14 @@ describe('A Classy Middleware', () => {
   let dispatch: Mock
   let getState: () => TestState
   let next: Mock
-
+  let consoleSpy: SpyInstance
   beforeEach(() => {
+    consoleSpy = jest.spyOn(console, 'info')
+    consoleSpy.mockReset()
     dispatch = jest.fn()
     next = jest.fn()
     getState = () => ({ someReducer: { someData: 'E-Z_P-Z' } })
+    Classy.globalConfig.debugEnabled = false
   })
 
   const buildMiddleware = (config?: Partial<MiddlewareConfig>) => {
@@ -39,7 +43,7 @@ describe('A Classy Middleware', () => {
   })
 
   describe('when action is a class', () => {
-    it('copies the data to a plain js object', () => {
+    describe('when there is no perform function', () => {
       class TestAction extends Classy() {
         someStaticData = '👍 data'
 
@@ -54,18 +58,46 @@ describe('A Classy Middleware', () => {
         }
       }
 
-      next.mockReturnValue('next middleware result')
+      it('copies the data to a plain js object', () => {
+        next.mockReturnValue('next middleware result')
 
-      const result = buildMiddleware()(new TestAction('🚀 data'))
+        const result = buildMiddleware()(new TestAction('🚀 data'))
 
-      expect(next).toHaveBeenCalledWith({
-        type: TestAction.TYPE,
-        someStaticData: '👍 data',
-        someDynamicData: '🚀 data'
+        expect(next).toHaveBeenCalledWith({
+          type: TestAction.TYPE,
+          someStaticData: '👍 data',
+          someDynamicData: '🚀 data'
+        })
+        expect(next).toHaveBeenCalledTimes(1)
+        expect(result).toEqual('next middleware result')
       })
-      expect(next).toHaveBeenCalledTimes(1)
-      expect(result).toEqual('next middleware result')
+
+      describe('when debug mode is on', () => {
+        it('should log plain js object', async () => {
+          const consoleSpy = jest.spyOn(console, 'info')
+          Classy.globalConfig.debugEnabled = true
+
+          next.mockReturnValue('next middleware result')
+
+          const result = buildMiddleware()(new TestAction('🚀 data'))
+
+          expect(next).toHaveBeenCalledWith({
+            type: TestAction.TYPE,
+            someStaticData: '👍 data',
+            someDynamicData: '🚀 data'
+          })
+          expect(next).toHaveBeenCalledTimes(1)
+          expect(result).toEqual('next middleware result')
+
+          expect(consoleSpy).toHaveBeenCalledTimes(1)
+          expect(consoleSpy.mock.calls[0][0]).toContain(
+            'Dispatching Classy Action'
+          )
+          expect(consoleSpy.mock.calls[0][1].type).toContain(TestAction.TYPE)
+        })
+      })
     })
+
     describe('when perform function is present', () => {
       let mockPerform: Mock
       beforeEach(() => {
@@ -225,6 +257,39 @@ describe('A Classy Middleware', () => {
           expect(dispatch).not.toHaveBeenCalled()
           await promise
           expect(dispatch).not.toHaveBeenCalled()
+        })
+      })
+
+      describe('when debug mode is on', () => {
+        it('should log lifecycle actions', async () => {
+          Classy.globalConfig.debugEnabled = true
+
+          mockPerform.mockReturnValue(
+            Promise.resolve({ some: 'success-response' })
+          )
+          await buildMiddleware({
+            dispatchLifecycleActions: true
+          })(new TestAsyncAction(mockPerform, 'some-data'))
+
+          expect(dispatch).toHaveBeenCalledWith({
+            type: TestAsyncAction.OnSuccess,
+            actionData: { type: TestAsyncAction.TYPE, data: 'some-data' },
+            successResult: { some: 'success-response' }
+          })
+
+          expect(consoleSpy).toHaveBeenCalledTimes(3)
+          expect(consoleSpy.mock.calls[0][0]).toContain(
+            'Dispatching Classy ASync Lifecycle Action'
+          )
+          expect(consoleSpy.mock.calls[0][1].type).toEqual(
+            TestAsyncAction.OnStart
+          )
+          expect(consoleSpy.mock.calls[1][1].type).toEqual(
+            TestAsyncAction.OnSuccess
+          )
+          expect(consoleSpy.mock.calls[2][1].type).toEqual(
+            TestAsyncAction.OnComplete
+          )
         })
       })
     })
