@@ -5,6 +5,9 @@ modern approach to redux action creation.
 [![Build Status](https://travis-ci.org/Jackman3005/redux-act-classy.svg?branch=master)](https://travis-ci.org/Jackman3005/redux-act-classy)
 [![Coverage Status](https://coveralls.io/repos/github/Jackman3005/redux-act-classy/badge.svg?branch=master)](https://coveralls.io/github/Jackman3005/redux-act-classy?branch=master)
 
+### Examples
+Are you a hands-on learner? Checkout this example project!
+[React Redux example app](examples/react-redux-app/README.md)
 
 ### Define a basic action
 ##### A basic action with a generated type

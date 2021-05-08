@@ -10,35 +10,35 @@ type AsyncActionWithInferredResult<T> = T extends {
   ? NonNullable<U>
   : never
 
-type NonFunctionPropertyNames<T> = {
-  [K in keyof T]: T[K] extends Function ? never : K
-}[keyof T]
+type NonFunctionPropertyNames<OBJECT> = {
+  [FIELD in keyof OBJECT]: OBJECT[FIELD] extends Function ? never : FIELD
+}[keyof OBJECT]
 type DataPropertiesOnly<T> = Pick<T, NonFunctionPropertyNames<T>>
 
-export interface StartAction<T extends ClassyAction<OUT | void>, OUT> {
+export interface StartAction<T extends ClassyAction<OUT | unknown>, OUT> {
   type: string
   actionData: DataPropertiesOnly<T>
 }
 
-export interface SuccessAction<T extends ClassyAction<OUT | void>, OUT> {
+export interface SuccessAction<T extends ClassyAction<OUT | unknown>, OUT> {
   type: string
   actionData: DataPropertiesOnly<T>
   successResult: OUT
 }
 
-export interface ErrorAction<T extends ClassyAction<OUT | void>, OUT> {
+export interface ErrorAction<T extends ClassyAction<OUT | unknown>, OUT> {
   type: string
   actionData: DataPropertiesOnly<T>
   errorResult: any
 }
 
-export interface CompleteAction<T extends ClassyAction<OUT | void>, OUT> {
+export interface CompleteAction<T extends ClassyAction<OUT | unknown>, OUT> {
   type: string
   actionData: DataPropertiesOnly<T>
 }
 
 export function isAction<
-  T extends ClassyAction<OUT | void>,
+  T extends ClassyAction<OUT | unknown>,
   U extends ClassyActionStatic<OUT, T>,
   OUT extends PerformResult<T>
 >(
@@ -49,7 +49,7 @@ export function isAction<
 }
 
 export function beforeStart<
-  T extends ClassyAction<OUT | void>,
+  T extends ClassyAction<OUT | unknown>,
   U extends ClassyActionStatic<OUT, T>,
   OUT extends PerformResult<T>
 >(
@@ -60,7 +60,7 @@ export function beforeStart<
 }
 
 export function afterSuccess<
-  T extends ClassyAction<OUT | void>,
+  T extends ClassyAction<OUT | unknown>,
   U extends ClassyActionStatic<OUT, T>,
   OUT extends PerformResult<T>
 >(
@@ -71,7 +71,7 @@ export function afterSuccess<
 }
 
 export function afterError<
-  T extends ClassyAction<OUT | void>,
+  T extends ClassyAction<OUT | unknown>,
   U extends ClassyActionStatic<OUT, T>,
   OUT extends PerformResult<T>
 >(
@@ -82,7 +82,7 @@ export function afterError<
 }
 
 export function afterComplete<
-  T extends ClassyAction<OUT | void>,
+  T extends ClassyAction<OUT | unknown>,
   U extends ClassyActionStatic<OUT, T>,
   OUT extends PerformResult<T>
 >(

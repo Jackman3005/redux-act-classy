@@ -1,6 +1,9 @@
 import { Action, Dispatch } from 'redux'
 
-export interface ClassyActionStatic<OUT, T extends ClassyAction<OUT | void>> {
+export interface ClassyActionStatic<
+  OUT,
+  T extends ClassyAction<OUT | unknown>
+> {
   new (...args: any[]): T
 
   TYPE: string
@@ -10,9 +13,9 @@ export interface ClassyActionStatic<OUT, T extends ClassyAction<OUT | void>> {
   OnError: string
 }
 
-export interface ClassyAction<OUT = void> extends Action {
+export interface ClassyAction<OUT = unknown> extends Action {
   constructor: ClassyActionStatic<OUT, this>
-  perform: (dispatch: Dispatch, getState: () => any) => Promise<OUT | undefined>
+  perform(dispatch: Dispatch, getState: () => any): Promise<OUT | undefined>
 }
 
 const typesInUse: string[] = []

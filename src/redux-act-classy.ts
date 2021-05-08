@@ -13,3 +13,8 @@ export {
   beforeStart,
   isAction
 } from './Helpers'
+
+export {
+  reducer as classyActionsReducer,
+  ActionsState
+} from './ActionsStateReducer'

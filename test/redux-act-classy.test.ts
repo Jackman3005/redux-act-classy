@@ -6,5 +6,6 @@ describe('redux-act-classy', () => {
 
     expect(reduxActClassyExports.Classy).toBeDefined()
     expect(reduxActClassyExports.buildAClassyMiddleware).toBeDefined()
+    expect(reduxActClassyExports.classyActionsReducer).toBeDefined()
   })
 })
