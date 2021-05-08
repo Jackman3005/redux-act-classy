@@ -7,7 +7,11 @@ modern approach to redux action creation.
 
 ### Examples
 Are you a hands-on learner? Checkout this example project!
-[React Redux example app](examples/react-redux-app/README.md)
+[React Redux example app](examples/react-redux-app)
+
+### Docs
+Documentation is auto-generated but encompasses all exported members of the library.
+[View the documentation](https://blog.jackcoy.io/redux-act-classy/)
 
 ### Define a basic action
 ##### A basic action with a generated type
