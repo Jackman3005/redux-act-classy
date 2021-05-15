@@ -1,0 +1,17 @@
+#!/bin/sh
+. "$(dirname "$0")/_/husky.sh"
+
+set -e
+
+echo "\n\n********************* Testing redux-act-classy\n"
+npm run test:prod
+
+echo "\n\n********************* Building redux-act-classy\n"
+npm run build
+
+
+echo "\n\n********************* Testing and building examples/react-redux-app\n"
+(
+  cd examples/react-redux-app
+  yarn test:all
+)
