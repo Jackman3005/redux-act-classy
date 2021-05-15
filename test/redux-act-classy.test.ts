@@ -5,7 +5,7 @@ describe('redux-act-classy', () => {
     expect(reduxActClassyExports).toBeDefined()
 
     expect(reduxActClassyExports.Classy).toBeDefined()
-    expect(reduxActClassyExports.buildAClassyMiddleware).toBeDefined()
+    expect(reduxActClassyExports.classyActionsMiddleware).toBeDefined()
     expect(reduxActClassyExports.classyActionsReducer).toBeDefined()
   })
 })

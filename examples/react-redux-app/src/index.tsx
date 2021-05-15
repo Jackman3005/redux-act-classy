@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom'
 import './index.css'
 import App from './App'
 import { applyMiddleware, combineReducers, createStore } from 'redux'
-import { ActionsState, buildAClassyMiddleware, Classy, classyActionsReducer } from 'redux-act-classy'
+import { ActionsState, classyActionsMiddleware, Classy, classyActionsReducer } from 'redux-act-classy'
 import drinksStateReducer, { DrinksState } from './drinks.state'
 import { Provider } from 'react-redux'
 
@@ -19,7 +19,7 @@ const store = createStore(
     actions: classyActionsReducer,
     drinks: drinksStateReducer,
   }),
-  applyMiddleware(buildAClassyMiddleware()),
+  applyMiddleware(classyActionsMiddleware),
 )
 
 

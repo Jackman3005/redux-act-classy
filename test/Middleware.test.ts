@@ -1,5 +1,4 @@
-import { MiddlewareConfig } from '../src/Middleware'
-import { Classy, buildAClassyMiddleware } from '../src/redux-act-classy'
+import { Classy, classyActionsMiddleware } from '../src/redux-act-classy'
 import { AnyAction } from 'redux'
 import Mock = jest.Mock
 import SpyInstance = jest.SpyInstance
@@ -15,34 +14,48 @@ describe('A Classy Middleware', () => {
   let getState: () => TestState
   let next: Mock
   let consoleSpy: SpyInstance
+  let middleware: (action: AnyAction) => any
   beforeEach(() => {
     consoleSpy = jest.spyOn(console, 'info')
     consoleSpy.mockReset()
     dispatch = jest.fn()
     next = jest.fn()
     getState = () => ({ someReducer: { someData: 'E-Z_P-Z' } })
+    middleware = classyActionsMiddleware({ dispatch, getState })(next)
     Classy.globalConfig.debugEnabled = false
   })
 
-  const buildMiddleware = (config?: Partial<MiddlewareConfig>) => {
-    return buildAClassyMiddleware(config)({ dispatch, getState })(next)
-  }
-
   describe('when action is plain object', () => {
     it('allows action to pass without modification', () => {
-      buildMiddleware()({ type: 'basic plain object action' })
+      middleware({ type: 'basic plain object action' })
       expect(next).toHaveBeenCalledWith({ type: 'basic plain object action' })
       expect(next).toHaveBeenCalledTimes(1)
     })
 
     it('returns result of calling next', () => {
       next.mockReturnValue('next middleware result')
-      const result = buildMiddleware()({ type: 'some-action' })
+      const result = middleware({ type: 'some-action' })
       expect(result).toEqual('next middleware result')
     })
   })
 
   describe('when action is a class', () => {
+    describe('when it is not a ClassyAction', () => {
+      it('ignores it and passes it to next without changing it', () => {
+        class SomeOtherLibraryAction {
+          type = 'not-a-classy-action'
+          some = 'data'
+          someFunction() {}
+        }
+
+        const action = new SomeOtherLibraryAction()
+        middleware(action)
+
+        expect(next).toHaveBeenCalledWith(action)
+        expect(next.mock.calls[0][0].someFunction).toBe(action.someFunction)
+      })
+    })
+
     describe('when there is no perform function', () => {
       class TestAction extends Classy() {
         someStaticData = '👍 data'
@@ -61,7 +74,7 @@ describe('A Classy Middleware', () => {
       it('copies the data to a plain js object', () => {
         next.mockReturnValue('next middleware result')
 
-        const result = buildMiddleware()(new TestAction('🚀 data'))
+        const result = middleware(new TestAction('🚀 data'))
 
         expect(next).toHaveBeenCalledWith({
           type: TestAction.TYPE,
@@ -79,7 +92,7 @@ describe('A Classy Middleware', () => {
 
           next.mockReturnValue('next middleware result')
 
-          const result = buildMiddleware()(new TestAction('🚀 data'))
+          const result = middleware(new TestAction('🚀 data'))
 
           expect(next).toHaveBeenCalledWith({
             type: TestAction.TYPE,
@@ -118,7 +131,7 @@ describe('A Classy Middleware', () => {
       }
 
       it('does not call next with original action', async () => {
-        buildMiddleware()(new TestAsyncAction(mockPerform))
+        middleware(new TestAsyncAction(mockPerform))
 
         expect(next).not.toHaveBeenCalled()
       })
@@ -127,7 +140,7 @@ describe('A Classy Middleware', () => {
         dispatch
           .mockReturnValueOnce('dispatch-success')
           .mockReturnValueOnce('dispatch-complete')
-        const result = buildMiddleware()(new TestAsyncAction(mockPerform))
+        const result = middleware(new TestAsyncAction(mockPerform))
 
         result.then((response: any) => {
           expect(response).toEqual('dispatch-complete')
@@ -136,127 +149,92 @@ describe('A Classy Middleware', () => {
       })
 
       it('calls perform with dispatcher and getState function', () => {
-        buildMiddleware()(new TestAsyncAction(mockPerform))
+        middleware(new TestAsyncAction(mockPerform))
 
         expect(mockPerform).toHaveBeenCalledWith(dispatch, getState)
       })
 
-      describe('when dispatching lifecycle actions', () => {
-        let middleware: (action: AnyAction) => AnyAction
-        beforeEach(() => {
-          middleware = buildMiddleware({
-            dispatchLifecycleActions: true
-          })
-        })
+      it('dispatches OnStart action', () => {
+        middleware(new TestAsyncAction(mockPerform, 'some-data'))
 
-        it('dispatches OnStart action', () => {
-          middleware(new TestAsyncAction(mockPerform, 'some-data'))
-
-          expect(dispatch).toHaveBeenCalledWith({
-            type: TestAsyncAction.OnStart,
-            actionData: { type: TestAsyncAction.TYPE, data: 'some-data' }
-          })
-        })
-        describe('when perform promise is resolved', () => {
-          it('dispatches OnSuccess action', async () => {
-            mockPerform.mockReturnValue(
-              Promise.resolve({ some: 'success-response' })
-            )
-            await middleware(new TestAsyncAction(mockPerform, 'some-data'))
-
-            expect(dispatch).toHaveBeenCalledWith({
-              type: TestAsyncAction.OnSuccess,
-              actionData: { type: TestAsyncAction.TYPE, data: 'some-data' },
-              successResult: { some: 'success-response' }
-            })
-          })
-
-          it('dispatches OnComplete action', async () => {
-            mockPerform.mockReturnValue(Promise.resolve())
-            await middleware(new TestAsyncAction(mockPerform, 'some-data'))
-
-            expect(dispatch).toHaveBeenCalledWith({
-              type: TestAsyncAction.OnComplete,
-              actionData: { type: TestAsyncAction.TYPE, data: 'some-data' }
-            })
-          })
-        })
-        describe('when perform promise is rejected', () => {
-          it('dispatches OnError action', async () => {
-            mockPerform.mockReturnValue(
-              Promise.reject({ some: 'error-response' })
-            )
-            await middleware(new TestAsyncAction(mockPerform, 'some-data'))
-
-            expect(dispatch).toHaveBeenCalledWith({
-              type: TestAsyncAction.OnError,
-              actionData: { type: TestAsyncAction.TYPE, data: 'some-data' },
-              errorResult: { some: 'error-response' }
-            })
-          })
-
-          it('dispatches OnComplete action', async () => {
-            mockPerform.mockReturnValue(Promise.reject())
-            await middleware(new TestAsyncAction(mockPerform, 'some-data'))
-
-            expect(dispatch).toHaveBeenCalledWith({
-              type: TestAsyncAction.OnComplete,
-              actionData: { type: TestAsyncAction.TYPE, data: 'some-data' }
-            })
-          })
-        })
-        describe('when perform function throws an error', () => {
-          it('dispatches OnError action', async () => {
-            mockPerform.mockImplementation(() => {
-              throw 'some error occurred!!'
-            })
-            await middleware(new TestAsyncAction(mockPerform, 'some-data'))
-
-            expect(dispatch).toHaveBeenCalledWith({
-              type: TestAsyncAction.OnError,
-              actionData: { type: TestAsyncAction.TYPE, data: 'some-data' },
-              errorResult: 'some error occurred!!'
-            })
-          })
-
-          it('dispatches OnComplete action', async () => {
-            mockPerform.mockImplementation(() => {
-              throw 'some error occurred!!'
-            })
-            await middleware(new TestAsyncAction(mockPerform, 'some-data'))
-
-            expect(dispatch).toHaveBeenCalledWith({
-              type: TestAsyncAction.OnComplete,
-              actionData: { type: TestAsyncAction.TYPE, data: 'some-data' }
-            })
-          })
+        expect(dispatch).toHaveBeenCalledWith({
+          type: TestAsyncAction.OnStart,
+          actionData: { type: TestAsyncAction.TYPE, data: 'some-data' }
         })
       })
 
-      describe('when not dispatching lifecycle actions', () => {
-        let middleware: (action: AnyAction) => AnyAction
-        beforeEach(() => {
-          middleware = buildMiddleware({
-            dispatchLifecycleActions: false
+      describe('when perform promise is resolved', () => {
+        it('dispatches OnSuccess action', async () => {
+          mockPerform.mockReturnValue(
+            Promise.resolve({ some: 'success-response' })
+          )
+          await middleware(new TestAsyncAction(mockPerform, 'some-data'))
+
+          expect(dispatch).toHaveBeenCalledWith({
+            type: TestAsyncAction.OnSuccess,
+            actionData: { type: TestAsyncAction.TYPE, data: 'some-data' },
+            successResult: { some: 'success-response' }
           })
         })
 
-        it('should not dispatch anything before or after Promise resolve', async () => {
+        it('dispatches OnComplete action', async () => {
           mockPerform.mockReturnValue(Promise.resolve())
-          const promise = middleware(new TestAsyncAction(mockPerform))
+          await middleware(new TestAsyncAction(mockPerform, 'some-data'))
 
-          expect(dispatch).not.toHaveBeenCalled()
-          await promise
-          expect(dispatch).not.toHaveBeenCalled()
+          expect(dispatch).toHaveBeenCalledWith({
+            type: TestAsyncAction.OnComplete,
+            actionData: { type: TestAsyncAction.TYPE, data: 'some-data' }
+          })
+        })
+      })
+      describe('when perform promise is rejected', () => {
+        it('dispatches OnError action', async () => {
+          mockPerform.mockReturnValue(
+            Promise.reject({ some: 'error-response' })
+          )
+          await middleware(new TestAsyncAction(mockPerform, 'some-data'))
+
+          expect(dispatch).toHaveBeenCalledWith({
+            type: TestAsyncAction.OnError,
+            actionData: { type: TestAsyncAction.TYPE, data: 'some-data' },
+            errorResult: { some: 'error-response' }
+          })
         })
 
-        it('should not dispatch anything before or after Promise reject', async () => {
+        it('dispatches OnComplete action', async () => {
           mockPerform.mockReturnValue(Promise.reject())
-          const promise = middleware(new TestAsyncAction(mockPerform))
+          await middleware(new TestAsyncAction(mockPerform, 'some-data'))
 
-          expect(dispatch).not.toHaveBeenCalled()
-          await promise
-          expect(dispatch).not.toHaveBeenCalled()
+          expect(dispatch).toHaveBeenCalledWith({
+            type: TestAsyncAction.OnComplete,
+            actionData: { type: TestAsyncAction.TYPE, data: 'some-data' }
+          })
+        })
+      })
+      describe('when perform function throws an error', () => {
+        it('dispatches OnError action', async () => {
+          mockPerform.mockImplementation(() => {
+            throw 'some error occurred!!'
+          })
+          await middleware(new TestAsyncAction(mockPerform, 'some-data'))
+
+          expect(dispatch).toHaveBeenCalledWith({
+            type: TestAsyncAction.OnError,
+            actionData: { type: TestAsyncAction.TYPE, data: 'some-data' },
+            errorResult: 'some error occurred!!'
+          })
+        })
+
+        it('dispatches OnComplete action', async () => {
+          mockPerform.mockImplementation(() => {
+            throw 'some error occurred!!'
+          })
+          await middleware(new TestAsyncAction(mockPerform, 'some-data'))
+
+          expect(dispatch).toHaveBeenCalledWith({
+            type: TestAsyncAction.OnComplete,
+            actionData: { type: TestAsyncAction.TYPE, data: 'some-data' }
+          })
         })
       })
 
@@ -267,9 +245,7 @@ describe('A Classy Middleware', () => {
           mockPerform.mockReturnValue(
             Promise.resolve({ some: 'success-response' })
           )
-          await buildMiddleware({
-            dispatchLifecycleActions: true
-          })(new TestAsyncAction(mockPerform, 'some-data'))
+          await middleware(new TestAsyncAction(mockPerform, 'some-data'))
 
           expect(dispatch).toHaveBeenCalledWith({
             type: TestAsyncAction.OnSuccess,

@@ -11,6 +11,7 @@ export interface ClassyActionStatic<
   OnComplete: string
   OnSuccess: string
   OnError: string
+  IsAClassyAction: true
 }
 
 export interface ClassyAction<OUT = unknown> extends Action {
@@ -25,6 +26,11 @@ class ClassyActionsConfiguration {
   public get debugEnabled() {
     return this._debugEnabled
   }
+
+  /**
+   * Default is disabled.
+   * Enabling will log all dispatched Classy Actions via console.info
+   */
   public set debugEnabled(enabled: boolean) {
     this._debugEnabled = enabled
   }
@@ -61,6 +67,7 @@ export const Classy = function<OUT = void>(
   typesInUse.push(type)
 
   class ActionImpl implements Action {
+    public static IsAClassyAction = true
     public static OnStart = `${type}-start`
     public static OnComplete = `${type}-complete`
     public static OnSuccess = `${type}-success`

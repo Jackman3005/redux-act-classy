@@ -39,10 +39,7 @@ function App() {
           >Order
           </button>
         </div>
-        {!!orderInProgress && (
-          <div>Processing order...</div>
-        ) || <div>&nbsp;</div>
-        }
+        {(!!orderInProgress && <div>Processing order...</div>) || <div>&nbsp;</div>}
         <div>
           <br/>
           You owe: ${totalPrice}

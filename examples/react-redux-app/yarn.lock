@@ -9521,7 +9521,6 @@
   dependencies:
     "core-js" "^3.0.1"
     "lodash" "^4.17.11"
-    "redux" "^4.0.1"
 
 "redux@^4.0.0", "redux@^4.1.0":
   "integrity" "sha512-uI2dQN43zqLWCt6B/BMGRMY6db7TTY4qeHHfGeKb3EOhmOKjU3KdWvNLJyqaHRksv/ErdNH7cFZWg9jXtewy4g=="

@@ -1,20 +1,33 @@
-import { AnyAction, Dispatch, Middleware } from 'redux'
+import { AnyAction, Middleware, MiddlewareAPI } from 'redux'
 import * as _ from 'lodash'
 import { Classy, ClassyAction } from './ClassyAction'
 
-export interface MiddlewareConfig {
-  dispatchLifecycleActions: boolean
+export const classyActionsMiddleware: Middleware = dispatchAndGetState => next => action => {
+  if (!isAClassyAction(action)) {
+    return next(action)
+  }
+
+  const actionHasAsyncSideEffect = _.isFunction(action.perform)
+  if (actionHasAsyncSideEffect) {
+    return handleAsyncAction(action, dispatchAndGetState)
+  } else {
+    const plainObjectAction = convertToPlainObject(action)
+    Classy.globalConfig.debugEnabled &&
+      console.info('Dispatching Classy Action: ', plainObjectAction)
+    return next(plainObjectAction)
+  }
 }
 
-const defaultConfig: MiddlewareConfig = {
-  dispatchLifecycleActions: true
+function isAClassyAction(action: any) {
+  const actionIsAClass = !_.isPlainObject(action)
+  return (
+    actionIsAClass && action.constructor && action.constructor.IsAClassyAction
+  )
 }
 
 function handleAsyncAction(
-  dispatchLifecycleActions: boolean,
   action: ClassyAction,
-  dispatch: Dispatch,
-  getState: () => any
+  { dispatch, getState }: MiddlewareAPI
 ) {
   function classyDispatch(a: AnyAction) {
     if (Classy.globalConfig.debugEnabled) {
@@ -25,70 +38,35 @@ function handleAsyncAction(
 
   const actionAsObject = convertToPlainObject(action)
 
-  if (dispatchLifecycleActions) {
-    classyDispatch({
-      actionData: actionAsObject,
-      type: action.constructor.OnStart
-    })
-  }
+  classyDispatch({
+    actionData: actionAsObject,
+    type: action.constructor.OnStart
+  })
   return action
     .perform(dispatch, getState)
-    .then(
-      (successResult: any) =>
-        dispatchLifecycleActions &&
-        classyDispatch({
-          actionData: actionAsObject,
-          type: action.constructor.OnSuccess,
-          successResult
-        })
+    .then((successResult: any) =>
+      classyDispatch({
+        actionData: actionAsObject,
+        type: action.constructor.OnSuccess,
+        successResult
+      })
     )
-    .catch(
-      (errorResult: any) =>
-        dispatchLifecycleActions &&
-        classyDispatch({
-          actionData: actionAsObject,
-          type: action.constructor.OnError,
-          errorResult
-        })
+    .catch((errorResult: any) =>
+      classyDispatch({
+        actionData: actionAsObject,
+        type: action.constructor.OnError,
+        errorResult
+      })
     )
-    .finally(
-      () =>
-        dispatchLifecycleActions &&
-        classyDispatch({
-          actionData: actionAsObject,
-          type: action.constructor.OnComplete
-        })
+    .finally(() =>
+      classyDispatch({
+        actionData: actionAsObject,
+        type: action.constructor.OnComplete
+      })
     )
 }
 
-export const buildAClassyMiddleware = (
-  config?: Partial<MiddlewareConfig>
-): Middleware => ({ dispatch, getState }) => next => action => {
-  const { dispatchLifecycleActions } = Object.assign(defaultConfig, config)
-
-  const actionIsAClass = !_.isPlainObject(action)
-  if (actionIsAClass) {
-    const actionHasSideEffect = _.isFunction(action.perform)
-    if (actionHasSideEffect) {
-      return handleAsyncAction(
-        dispatchLifecycleActions,
-        action,
-        dispatch,
-        getState
-      )
-    } else {
-      const plainObjectAction = convertToPlainObject(action)
-      if (Classy.globalConfig.debugEnabled) {
-        console.info('Dispatching Classy Action: ', plainObjectAction)
-      }
-      return next(plainObjectAction)
-    }
-  } else {
-    return next(action)
-  }
-}
-
-const convertToPlainObject = (obj: any) => {
+function convertToPlainObject(obj: any) {
   const cleanedObj: any = {}
   Object.keys(obj)
     .filter(key => !_.isFunction(obj[key]))

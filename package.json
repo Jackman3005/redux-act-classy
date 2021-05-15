@@ -18,6 +18,13 @@
   "engines": {
     "node": ">=8.0.0"
   },
+  "peerDependencies": {
+    "redux": "^4.0.1"
+  },
+  "dependencies": {
+    "core-js": "^3.0.1",
+    "lodash": "^4.17.11"
+  },
   "scripts": {
     "lint": "tslint  --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
     "prebuild": "rimraf dist",
@@ -82,11 +89,6 @@
     "extends": [
       "@commitlint/config-conventional"
     ]
-  },
-  "dependencies": {
-    "core-js": "^3.0.1",
-    "lodash": "^4.17.11",
-    "redux": "^4.0.1"
   },
   "devDependencies": {
     "@commitlint/cli": "^7.1.2",
