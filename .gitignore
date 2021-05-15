@@ -4,3 +4,4 @@ src/*.js
 .rpt2_cache
 docs
 coverage
+dist
